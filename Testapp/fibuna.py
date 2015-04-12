@@ -5,3 +5,4 @@ def fib(max):
     while a < max:
         yield a
         a, b = b, a + b
+        return fib

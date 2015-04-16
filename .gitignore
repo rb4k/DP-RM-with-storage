@@ -55,3 +55,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Pakete unter fremder Lizenz
+boost_1_57_0/

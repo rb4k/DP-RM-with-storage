@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "code",
-   "execution_count": 80,
+   "execution_count": 90,
    "metadata": {
     "collapsed": false
    },
@@ -24,7 +24,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 81,
+   "execution_count": 91,
    "metadata": {
     "collapsed": false
    },
@@ -36,7 +36,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 82,
+   "execution_count": 92,
    "metadata": {
     "collapsed": false
    },
@@ -45,7 +45,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "0:00:00.000440\n"
+      "0:00:00.000567\n"
      ]
     }
    ],
@@ -105,7 +105,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 83,
+   "execution_count": 93,
    "metadata": {
     "collapsed": false
    },
@@ -116,7 +116,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 84,
+   "execution_count": 94,
    "metadata": {
     "collapsed": false
    },
@@ -125,7 +125,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "0:00:00.000553\n"
+      "0:00:00.000588\n"
      ]
     }
    ],
@@ -146,7 +146,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 85,
+   "execution_count": 95,
    "metadata": {
     "collapsed": true
    },
@@ -160,7 +160,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 86,
+   "execution_count": 96,
    "metadata": {
     "collapsed": false
    },
@@ -171,7 +171,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 87,
+   "execution_count": 97,
    "metadata": {
     "collapsed": false
    },
@@ -219,7 +219,7 @@
        "544.75"
       ]
      },
-     "execution_count": 87,
+     "execution_count": 97,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -230,7 +230,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 88,
+   "execution_count": 98,
    "metadata": {
     "collapsed": false
    },
@@ -388,7 +388,7 @@
        " 1             3         LE    73  80     5000       5000)"
       ]
      },
-     "execution_count": 88,
+     "execution_count": 98,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -401,7 +401,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 89,
+   "execution_count": 99,
    "metadata": {
     "collapsed": false
    },
@@ -413,7 +413,7 @@
      "traceback": [
       "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
       "\u001b[0;31mAttributeError\u001b[0m                            Traceback (most recent call last)",
-      "\u001b[0;32m<ipython-input-89-ec0a85ebe107>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m     11\u001b[0m         \u001b[0;31m# same layout using matplotlib with no labels\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     12\u001b[0m \u001b[0mpos\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mnx\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgraphviz_layout\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mdraw\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mprog\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m'dot'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 13\u001b[0;31m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfigure\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfigsize\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0msize_x\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0msize_y\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     14\u001b[0m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtitle\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Entscheidungsbaum\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     15\u001b[0m \u001b[0mnx\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mdraw\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mdraw\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mpos\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mwith_labels\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mTrue\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mnode_size\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;36m500\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m<ipython-input-99-ec0a85ebe107>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m     11\u001b[0m         \u001b[0;31m# same layout using matplotlib with no labels\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     12\u001b[0m \u001b[0mpos\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mnx\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgraphviz_layout\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mdraw\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mprog\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m'dot'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 13\u001b[0;31m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfigure\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfigsize\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0msize_x\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0msize_y\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     14\u001b[0m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtitle\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Entscheidungsbaum\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     15\u001b[0m \u001b[0mnx\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mdraw\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mdraw\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mpos\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mwith_labels\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mTrue\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mnode_size\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;36m500\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
       "\u001b[0;31mAttributeError\u001b[0m: 'module' object has no attribute 'figure'"
      ]
     }

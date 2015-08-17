@@ -1,0 +1,12 @@
+#!/bin/bash -login
+#PBS -l nodes=12:ppn=1
+#PBS -l walltime=50:00:00
+#PBS -l mem=20GB
+module load ipython/3.2.0
+module load numpy/1.9.2
+module load scipy/0.14.0
+module load matplotlib/1.4.3
+module load networkx/1.10
+
+# start ipython
+ipython Normalverteilt/normalverteilt_gleich.py

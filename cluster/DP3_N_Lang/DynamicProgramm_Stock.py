@@ -221,14 +221,14 @@ def Structure_Stock(solutions, conditions, products, resources, consumtions, rev
                                     else:
                                         graph.add_edge(i, state_storage, key='0-LP('+str(j)+')', modus='LP', label='0-LP('+str(j)+')', style="dotted", weight=0, weight_goal=solutions[state_storage][1], revenue=0, goal=solutions[state_storage][0], time=solutions[i][0][-1])
 
-            draw = graph.copy()
-            draw.remove_node('end')
+        draw = graph.copy()
+        draw.remove_node('end')
                 # Quelle: http://stackoverflow.com/a/11484144/4913569
                 # ----
                 # write dot file to use with graphviz
                 # run "dot -Tpng test.dot >test.png"
-            nx.write_dot(draw,'graph.dot')
-            dot = gv.Source(nx.to_agraph(draw), filename='graph.gv')
+        nx.write_dot(draw,'graph.dot')
+        dot = gv.Source(nx.to_agraph(draw), filename='graph.gv')
 
             # same layout using matplotlib with no labels
             #pos=nx.graphviz_layout(draw,prog='dot')

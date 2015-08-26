@@ -53,7 +53,7 @@ def DP_Stock(solutions, conditions, products, resources, capacities, consumtions
             for j in product:
 
                 change = capacities-consumtions[j]
-                decrease_stock = stocks-consumtions[j]
+                
 
                 if np.all((change) >= np.float32(0)):
                     # Initialisierung der Rechnung für t-1 mit Akeptanz jeweils für ein Produkt j.
@@ -65,6 +65,11 @@ def DP_Stock(solutions, conditions, products, resources, capacities, consumtions
                     # der Grenzbedingung V(c,y,t)=-infinitely, falls c[j] < 0.
                     order = np.float16(0)
                     oc = np.float16(0)
+                
+                
+                change_stock = np.cumsum(np.array(consumtions[j], dtype=np.uint8))
+                decrease_stock = np.copy(stocks)
+                decrease_stock = np.array(decrease_stock-change_stock, dtype=np.int16)
 
                 if np.all((decrease_stock) >= np.float32(0)):
                     # Initialisierung der Rechnung für t-1 mit Akeptanz jeweils für ein Produkt j.
@@ -77,11 +82,11 @@ def DP_Stock(solutions, conditions, products, resources, capacities, consumtions
                     order_stock = np.float16(0)
                     oc_stock = np.float16(0)
 
-                change_stock = np.cumsum(np.insert([np.array(consumtions[j], dtype=np.uint8)], 0, 0)[:-1])
+                change_workup = np.cumsum(np.insert([np.array(consumtions[j], dtype=np.uint8)], 0, 0)[:-1])
                 increase_stock = np.copy(stocks)
-                increase_stock = np.array(increase_stock+change_stock, dtype=np.int16)
+                increase_stock = np.array(increase_stock+change_workup, dtype=np.int16)
 
-                if np.all((change) >= np.float32(0)) and np.all((increase_stock) <= (max_stocks)) and np.count_nonzero(change_stock)!=0:
+                if np.all((change) >= np.float32(0)) and np.all((increase_stock) <= (max_stocks)) and np.count_nonzero(change_workup)!=0:
                     # Initialisierung der Rechnung für t-1 mit Akeptanz jeweils für ein Produkt j.
                     accept_workup_j = DP_Stock(solutions, conditions, products, resources, change, consumtions, times[1:], revenues, probs, increase_stock, max_stocks)
                     oc_workup = reject-accept_workup_j
@@ -185,8 +190,9 @@ def Structure_Stock(solutions, conditions, products, resources, consumtions, rev
                                         graph.add_edge(i, state, key=str(j)+'-AA', modus='AA', label=str(j)+'-AA', style="dotted", weight=0, weight_goal=solutions[state][1], revenue=0, goal=solutions[state][0], time=solutions[i][0][-1])
 
                         # Lagerveränderung aufgrund der Anfragen nach Produkt 'j' wird erfasst.
+                        change_stock = np.cumsum(np.array(consumtions[j][1:], dtype=np.uint8))
                         decrease_stock = np.copy(solutions[i][0][(len(resources)-1):-1])
-                        decrease_stock = decrease_stock-consumtions[j][1:]
+                        decrease_stock = decrease_stock-change_stock
                         if np.all((decrease_stock) >= np.float32(0)):
                                 # Zielzustand wird ermittelt.
                                 reduction_stock = np.hstack((solutions[i][0][:len(resources)-1],decrease_stock,solutions[i][0][-1]-1))
@@ -200,10 +206,10 @@ def Structure_Stock(solutions, conditions, products, resources, consumtions, rev
                                         graph.add_edge(i, state_stock, key=str(j)+'-LE', modus='LE', label=str(j)+'-LE', style="dotted", weight=0, weight_goal=solutions[state_stock][1], revenue=0, goal=solutions[state_stock][0], time=solutions[i][0][-1])
 
                         # Lagererhöhung aufgrund der Anfragen nach Produkt 'j' wird erfasst.
-                        change_stock = np.cumsum(np.insert(np.array(consumtions[j][1:]), 0, 0)[:-1])
+                        change_workup = np.cumsum(np.insert(np.array(consumtions[j][1:]), 0, 0)[:-1])
                         increase_stock = np.copy(solutions[i][0][(len(resources)-1):-1])
-                        increase_stock = increase_stock+change_stock
-                        if np.all((change) >= np.float32(0)) and np.all((increase_stock) <= (max_stocks[1:])) and np.count_nonzero(change_stock)!=0:
+                        increase_stock = increase_stock+change_workup
+                        if np.all((change) >= np.float32(0)) and np.all((increase_stock) <= (max_stocks[1:])) and np.count_nonzero(change_workup)!=0:
                             # Zielzustand wird ermittelt.
                             propagation_stock = np.hstack((change,increase_stock,solutions[i][0][-1]-1))
                             state_storage = np.where((conditions == propagation_stock).all(axis=1))[0][0]

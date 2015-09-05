@@ -19,8 +19,6 @@ import datetime
 def DP_Stock(solutions, conditions, products, resources, capacities, consumtions, times, revenues, probs, stocks, max_stocks):
     '''Berechnung der Erwartungswerte des Auftragsannahmeproblems inkl. Lagerhaltung.'''
 
-    # Regeneration der Kapazitäten in dieser Rechnung nicht möglich!!!
-
     # Leere Wert für den Erwartungswert des aktuellen Systemzustands.
     value = 0
 
@@ -44,61 +42,63 @@ def DP_Stock(solutions, conditions, products, resources, capacities, consumtions
             accept = np.zeros(shape=(len(products[1:])), dtype=np.float16)
             index_order = np.zeros(shape=(len(products)), dtype=np.uint8)
             oc_order = np.zeros(shape=(len(products[1:])), dtype=np.float16)
-
+            
+            # Liste für die mögliche Lagerproduktion ohne Auftragseingang wird erstellt.
             reject_list = np.zeros(shape=(len(products[1:])), dtype=np.float16)
 
-
-            # For-Schleife über alle Produkte, sofern die Kapazitäten keinen negativen Werte annehmen.
+            # For-Schleife über alle möglichen Produktanfragen.
             product = (j for j in products[1:] if probs[j][times[0]] > 0)
             for j in product:
-
-                change = capacities-consumtions[j]
                 
-
+                # Kapazitätsveränderung aufgrund Auftragsannahme.
+                change = capacities-consumtions[j]
+                # Prüfung, ob Kapazität keinen negativen Wert annimmt.
                 if np.all((change) >= np.float32(0)):
-                    # Initialisierung der Rechnung für t-1 mit Akeptanz jeweils für ein Produkt j.
+                    # Initialisierung der Rechnung für Auftragsannahme.
                     accept_j = DP_Stock(solutions, conditions, products, resources, change, consumtions, times[1:], revenues, probs, stocks, max_stocks)
                     oc = reject-accept_j
                     order = np.float32(revenues[j]-reject+accept_j)
                 else:
-                    # Erwartungswert für ein Produkt j enspricht
+                    # Erwartungswert für eine Produktanfrage j enspricht
                     # der Grenzbedingung V(c,y,t)=-infinitely, falls c[j] < 0.
                     order = np.float16(0)
                     oc = np.float16(0)
                 
-                
+                # Lagerveränderung aufgrund Auftragsananhme.
                 change_stock = np.cumsum(np.array(consumtions[j], dtype=np.uint8))
                 decrease_stock = np.copy(stocks)
                 decrease_stock = np.array(decrease_stock-change_stock, dtype=np.int16)
-
+                # Prüfung, ob Lagerbestand keinen negativen Wert annimmt.
                 if np.all((decrease_stock) >= np.float32(0)):
-                    # Initialisierung der Rechnung für t-1 mit Akeptanz jeweils für ein Produkt j.
+                    # Initialisierung der Rechnung für Lagerentnahme.
                     accept_stock_j = DP_Stock(solutions, conditions, products, resources, capacities, consumtions, times[1:], revenues, probs, decrease_stock, max_stocks)
                     oc_stock = reject-accept_stock_j
                     order_stock = np.float32(revenues[j]-reject+accept_stock_j)
                 else:
-                    # Erwartungswert für ein Produkt j enspricht
+                    # Erwartungswert für eine Produktanfrage j enspricht
                     # der Grenzbedingung V(c,y,t)=-infinitely, falls c[j] < 0.
                     order_stock = np.float16(0)
                     oc_stock = np.float16(0)
-
+                
+                # Lagerveränderung aufgrund Lagerproduktion.
                 change_workup = np.cumsum(np.insert([np.array(consumtions[j], dtype=np.uint8)], 0, 0)[:-1])
                 increase_stock = np.copy(stocks)
                 increase_stock = np.array(increase_stock+change_workup, dtype=np.int16)
-
+                # Prüfung, ob Lagerproduktion möglich ist.
                 if np.all((change) >= np.float32(0)) and np.all((increase_stock) <= (max_stocks)) and np.count_nonzero(change_workup)!=0:
-                    # Initialisierung der Rechnung für t-1 mit Akeptanz jeweils für ein Produkt j.
+                    # Initialisierung der Rechnung für Lagerproduktion.
                     accept_workup_j = DP_Stock(solutions, conditions, products, resources, change, consumtions, times[1:], revenues, probs, increase_stock, max_stocks)
                     oc_workup = reject-accept_workup_j
                     order_workup = np.float32(accept_workup_j-reject)
                     reject_list[j-1] = order_workup
                 else:
-                    # Erwartungswert für ein Produkt j enspricht
+                    # Erwartungswert für eine Produktanfrage j enspricht
                     # der Grenzbedingung V(c,y,t)=-infinitely, falls c[j] < 0.
                     order_workup = np.float16(0)
                     oc_workup = np.float16(0)
                     reject_list[j-1] = order_workup
-
+                
+                # Speicherng der Ergebnisse.
                 list_order = np.hstack((0, order, order_stock, order_workup))
                 max_order[j-1] = np.amax(list_order)
                 index_order[j] = np.argmax(list_order)
@@ -112,10 +112,11 @@ def DP_Stock(solutions, conditions, products, resources, capacities, consumtions
             index_reject = np.argmax(list_reject)
             index_order[0] = index_reject
 
-            # Summierung der Erwartungswerte ohne und mit Akzeptanz.
+            # Summierung zum Erwartungswert.
             value = np.float32(reject + np.sum(accept) + (probs[0][times[0]]*max_reject))
-            # Einzelne Optionen werden nach ihrem erw. Ertrag indiziert.
+            # Beste Lösung wird ermittelt.
             index = np.argmax(max_order)
+            # Der Zustand wird mit dem Erwartungswert in das Dict "solutions" gespeichert.
             if np.all(max_order == 0):
                 solutions[state] = [conditions[state], value, 0, 0, 0, index_order]
             else:
@@ -163,9 +164,9 @@ def Structure_Stock(solutions, conditions, products, resources, consumtions, rev
                 graph.add_edge(i, "end", key=0, modus=0, weight=0, revenue=0, time=0)
             # Sonst führe die Schleife aus.
             else:
-                # Aufgrund der differenzierten Auftragsannahme erfolgt eine Schleife über alle Produkte.
+                # Aufgrund der differenzierten Auftragsannahme erfolgt eine Schleife über alle Produktanfragen.
                 for j in products:
-                    # Kapazitätsveränderung aufgrund der Anfragen nach Produkt 'j' wird erfasst.
+                    # Kapazitätsveränderung aufgrund der Produktanfrage 'j' wird erfasst.
                     change = np.copy(solutions[i][0][:len(resources)-1])
                     change = change-consumtions[j][1:]
 
@@ -189,7 +190,7 @@ def Structure_Stock(solutions, conditions, products, resources, consumtions, rev
                                     else:
                                         graph.add_edge(i, state, key=str(j)+'-AA', modus='AA', label=str(j)+'-AA', style="dotted", weight=0, weight_goal=solutions[state][1], revenue=0, goal=solutions[state][0], time=solutions[i][0][-1])
 
-                        # Lagerveränderung aufgrund der Anfragen nach Produkt 'j' wird erfasst.
+                        # Lagerreduzierung aufgrund der Produktanfrage 'j' wird erfasst.
                         change_stock = np.cumsum(np.array(consumtions[j][1:], dtype=np.uint8))
                         decrease_stock = np.copy(solutions[i][0][(len(resources)-1):-1])
                         decrease_stock = decrease_stock-change_stock
@@ -205,7 +206,7 @@ def Structure_Stock(solutions, conditions, products, resources, consumtions, rev
                                     else:
                                         graph.add_edge(i, state_stock, key=str(j)+'-LE', modus='LE', label=str(j)+'-LE', style="dotted", weight=0, weight_goal=solutions[state_stock][1], revenue=0, goal=solutions[state_stock][0], time=solutions[i][0][-1])
 
-                        # Lagererhöhung aufgrund der Anfragen nach Produkt 'j' wird erfasst.
+                        # Lagererhöhung aufgrund der Produktanfrage 'j' wird erfasst.
                         change_workup = np.cumsum(np.insert(np.array(consumtions[j][1:]), 0, 0)[:-1])
                         increase_stock = np.copy(solutions[i][0][(len(resources)-1):-1])
                         increase_stock = increase_stock+change_workup
@@ -247,7 +248,7 @@ def Structure_Stock(solutions, conditions, products, resources, consumtions, rev
         print 'Graph hat %i Knoten. Datenstruktur durch NetworkX ist nicht erstellt.' % len(solutions)
 
 
-# Optimalen Politik als Datenbank speichern.
+# Speicherung der Ergebnisse.
 
 def Opt_Politic_Stock(solutions, resources, stocks, products):
 
@@ -258,9 +259,6 @@ def Opt_Politic_Stock(solutions, resources, stocks, products):
     db_time = []
     db_sol = []
     db_op = []
-
-    #array = np.array(solutions.values()).T
-    #print array[0].T
 
     # Spalten für die Ressourcenkapazitäten erstellen.
     for res in resources[1:]:
